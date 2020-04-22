@@ -15,6 +15,7 @@
   "autoload": {
     "psr-4": {
       "Acquia\\GitlabPipelines\\": "./src/"
-    }
+    },
+    "classmap":["src/Blt/Plugin/EnvironmentDetector/GitlabDetector.php"]
   }
 }
