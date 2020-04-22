@@ -10,7 +10,7 @@ stages:
 variables:
   APP_NAME: BLT-Project
   BLT: ./vendor/bin/blt
-  SCRIPT_DIR: ./vendor/mikemadison13/blt-gitlab/pipelines
+  SCRIPT_DIR: ./vendor/mikemadison13/blt-gitlab-pipelines/scripts/gitlab
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
 
