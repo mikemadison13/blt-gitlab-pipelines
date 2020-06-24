@@ -10,4 +10,4 @@
  *
  * @see ci.settings.php
  */
-$databases['default']['default']['host'] = 'mysql';
+$databases['default']['default']['host'] = 'database';
