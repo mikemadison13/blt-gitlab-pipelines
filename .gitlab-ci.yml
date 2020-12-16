@@ -82,4 +82,4 @@ deploy:
       allow_failure: false
   script:
     - $SCRIPT_DIR/setup_env.sh
-    - $SCRIPT_DIR/scripts/deploy_branch.sh
+    - $SCRIPT_DIR/deploy_branch.sh
