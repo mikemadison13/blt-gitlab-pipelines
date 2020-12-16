@@ -4,7 +4,6 @@ stages:
   - build
   - validate
   - setup_and_test
-  - test
   - deploy
 
 variables:
@@ -31,20 +30,9 @@ cache: &global_cache
   cache:
     <<: *global_cache
     policy: pull-push
-  only:
-    variables:
-      - $GITLAB_CI
-      - $CI_COMMIT_SHA
-      - $CI_COMMIT_REF_NAME
-      - $CI_JOB_ID
-      - $CI_SERVER_VERSION
-      - $CI_COMMIT_BRANCH
-      - $CI_MERGE_REQUEST_ID
-      - $PERCY_TOKEN
-      - $MYSQL_DATABASE
-      - $MYSQL_ROOT_PASSWORD
 
-before_script: []
+before_script:
+  - $SCRIPT_DIR/add_keys.sh
 
 build:
   stage: build
@@ -82,11 +70,10 @@ deploy:
   extends:
     - .global_cache
     - build
-  allow_failure: false
-  # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
-  except:
-    variables:
-      - $CI_MERGE_REQUEST_ID =~ ".+"
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID !~ /.+/'
+      when: always
+      allow_failure: false
   script:
     - $SCRIPT_DIR/setup_env.sh
-    - $SCRIPT_DIR/deploy_artifact.sh
+    - $SCRIPT_DIR/deploy_branch.sh
