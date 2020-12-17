@@ -31,8 +31,23 @@ cache: &global_cache
     <<: *global_cache
     policy: pull-push
 
+workflow:
+  rules:
+    # Don't run the pipeline if the private key and GIT url is not set
+    # see README for instructions.
+    - if: '$ACQUIA_PRIVATE_KEY'
+      when: always
+    - if: '$ACQUIA_GIT_URL'
+      when: always
+
 before_script:
-  - $SCRIPT_DIR/add_keys.sh
+  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+  - eval $(ssh-agent -s)
+  - cat $ACQUIA_PRIVATE_KEY | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod -R 700 ~/.ssh
+  - ssh-keyscan $ACQUIA_GIT_URL >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
 
 build:
   stage: build
@@ -40,7 +55,7 @@ build:
   allow_failure: false
   script:
     - composer validate --no-check-all --ansi
-    - composer install
+    - composer install --no-interaction
     - npm install npm@latest -g
 
 validate:
