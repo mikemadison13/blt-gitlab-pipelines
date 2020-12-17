@@ -19,7 +19,37 @@ Initialize the Gitlab integration by calling `recipes:ci:gitlab:init`, which is 
 
 This will copy a template version of the .gitlab-ci.yml to your project root directory. Make sure to commit this as well as your updated composer.json to Git.
 
-Note: the template YAML file assumes standard BLT steps for builds (and is similar to the templated Travis CI and Acquia Piplines files). Modifications can be made as necessary! Build scripts can also be modified by copying them out of this plugin and changing the file path as needed in the YAML file. 
+Note: the template YAML file assumes standard BLT steps for builds (and is similar to the templated Travis CI and Acquia Piplines files). Modifications can be made as necessary! Build scripts can also be modified by copying them out of this plugin and changing the file path as needed in the YAML file.
+
+## SSH Deployment Key Management
+
+In order to deploy to Acquia Cloud, Gitlab needs to have a private SSH key. The
+private key inside Gitlab needs to have a [corresponding public key attached to a
+user within Acquia Cloud](https://docs.acquia.com/cloud-platform/manage/ssh/enable/add-key/). This user must have permissions to deploy to the
+repository. Also note that Gitlab does not run `ssh-agent` and manage keys for
+you, but we include the commands to do so within the `before_script` job.
+
+### Key Configuration
+
+You need to [set an environment variable](https://docs.gitlab.com/ee/ci/variables/README.html#gitlab-cicd-environment-variables) for [a private SSH key](https://docs.acquia.com/cloud-platform/manage/ssh/enable/add-key/) within Gitlab in
+order to deploy to the repository in Acquia Cloud. To set environment variables
+for your repository, go to Settings > CI / CD > Variables. Note that your user
+must have permissions within Gitlab to manage configuration for the repository.
+
+When setting the environment variable, set the 'Type' field to 'File', and check
+the box marked 'Mask variable'. This will stop your private key from being
+printed inside your build logs. Use the variable name `ACQUIA_PRIVATE_KEY`.
+
+You must also an environment variable for the URL to your application repository.
+This variable does not need to be masked or protected. Use the name
+`ACQUIA_GIT_URL`. This was add the URL to your repository to the ssh-agent
+`known_hosts` list.
+
+### Private repositories
+
+You can add additional keys to this script if you need to, for example, if
+your build jobs need to access private repositories in another VCS, such as
+Github.
 
 # License
 
