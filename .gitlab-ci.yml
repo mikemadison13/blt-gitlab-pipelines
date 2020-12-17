@@ -13,23 +13,18 @@ variables:
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
 
-cache: &global_cache
+cache:
   key: ${CI_COMMIT_REF_SLUG}
-  policy: pull-push
   paths:
     - $HOME/.npm
     - $HOME/.nvm
+    - $HOME/.composer
     - $CI_PROJECT_DIR/docroot/core
     - $CI_PROJECT_DIR/docroot/libraries
     - $CI_PROJECT_DIR/docroot/modules/contrib
     - $CI_PROJECT_DIR/docroot/themes/contrib
     - $CI_PROJECT_DIR/docroot/profiles/contrib
     - $CI_PROJECT_DIR/vendor
-
-.global_cache:
-  cache:
-    <<: *global_cache
-    policy: pull-push
 
 workflow:
   rules:
@@ -51,8 +46,9 @@ before_script:
 
 build:
   stage: build
-  extends: .global_cache
   allow_failure: false
+  services:
+    - mysql:5.7
   script:
     - composer validate --no-check-all --ansi
     - composer install --no-interaction
@@ -61,7 +57,6 @@ build:
 validate:
   stage: validate
   extends:
-    - .global_cache
     - build
   allow_failure: false
   script:
@@ -70,7 +65,6 @@ validate:
 setup_and_test:
   stage: setup_and_test
   extends:
-    - .global_cache
     - build
   services:
     - mysql:5.7
