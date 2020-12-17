@@ -51,7 +51,7 @@ build:
     - mysql:5.7
   script:
     - composer validate --no-check-all --ansi
-    - composer install --no-interaction
+    - composer install
     - npm install npm@latest -g
 
 validate:
