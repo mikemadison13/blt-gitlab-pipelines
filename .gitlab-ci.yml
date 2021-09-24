@@ -65,10 +65,10 @@ deploy:
     - .global_cache
     - build
   allow_failure: false
-  # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
-  except:
-    variables:
-      - $CI_MERGE_REQUEST_ID =~ ".+"
+  only:
+    - main
+    - develop
+    - tags
   script:
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/deploy_artifact.sh
