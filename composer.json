@@ -12,6 +12,9 @@
   ],
   "require": {},
   "extra": {},
+  "conflict": {
+    "acquia/blt": "<13.5.1"
+  },
   "autoload": {
     "psr-4": {
       "Acquia\\GitlabPipelines\\": "./src/"
